@@ -2,22 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: daas
-  name: daas
+    app: daas-service
+  name: daas-service
+  namespace: daas
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: daas
+      app: daas-service
   template:
     metadata:
       labels:
-        app: daas
+        app: daas-service
     spec:
-      serviceAccountName: daas-services
+      serviceAccountName: daas-service
       containers:
       - image: docker.io/christiantragesser/daas
-        name: daas
+        name: daas-service
         ports:
           - containerPort: 5000
         livenessProbe:
@@ -34,8 +35,8 @@ spec:
           periodSeconds: 5
         resources:
           limits:
-            cpu: 500m
-            memory: 1G
+            cpu: 300m
+            memory: 500M
           requests:
             cpu: 200m
-            memory: 500M
+            memory: 100M
