@@ -1,0 +1,25 @@
+tools: sys.getenv
+You have just recieved an alarm related to a Kubernetes resource.  The information about the alarm is contained in the following environment variables:
+ALERT_ISSUE_ID
+ALERT_NAMESPACE
+ALERT_RESOURCE_TYPE
+ALERT_APP_NAME
+ALERT_URL
+ALERT_SUMMARY
+
+1. Evaluate the cause of the alert using the information provided in the ALERT_SUMMARY environment variable.
+2. Reference the information made available at the website URL provided by the ALERT_URL environment variable.
+3. Use the information provided by environment variables ALERT_NAMESPACE, ALERT_RESOURCE_TYPE, and ALERT_APP_NAME to describe the kubernetes resource using describe_resource tool.
+4. Based on your findings, output what you've found and make a suggestion to resolve the issue named by the value of environment variable ALERT_ISSUE_ID.
+
+---
+name: describe_resource
+tools: sys.exec
+description: describe kubernetes resource
+args: ns: the kubernetes namespace of the resource
+args: type: the type of kubernetes resource
+args: name: the name of the kubernetes resource
+
+#!/bin/sh
+
+kubectl describe -n ${ns} ${type}/${name}

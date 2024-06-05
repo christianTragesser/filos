@@ -1,0 +1,7 @@
+FROM alpine
+RUN apk add --no-cache curl kubectl && \
+    curl https://get.gptscript.ai/install.sh | sh
+
+ADD tool.gpt /tool.gpt
+
+CMD ["gptscript", "--default-model", "gpt-4o", "/tool.gpt"]
