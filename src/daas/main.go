@@ -30,6 +30,8 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	log.Info("Starting DaaS service...")
+
 	http.HandleFunc("/alerts", handleWebhook)
 	http.HandleFunc("/health", handleHealth)
 	if err := http.ListenAndServe(":5000", nil); err != nil {
