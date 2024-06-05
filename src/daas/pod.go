@@ -57,7 +57,7 @@ func runFilosInstance(c Context) {
 	pod := &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "filos-" + c.issueID,
-			Namespace: c.namespace,
+			Namespace: "daas",
 		},
 		Spec: corev1.PodSpec{
 			Containers: []corev1.Container{
@@ -65,6 +65,17 @@ func runFilosInstance(c Context) {
 					Name:  "filos-" + c.issueID,
 					Image: "docker.io/christiantragesser/filos",
 					Env: []corev1.EnvVar{
+						{
+							Name: "OPENAI_API_KEY",
+							ValueFrom: &corev1.EnvVarSource{
+								SecretKeyRef: &corev1.SecretKeySelector{
+									LocalObjectReference: corev1.LocalObjectReference{
+										Name: "gptscript-key",
+									},
+									Key: "key",
+								},
+							},
+						},
 						{
 							Name:  "ALERT_ISSUE_ID",
 							Value: c.issueID,
@@ -92,15 +103,16 @@ func runFilosInstance(c Context) {
 					},
 				},
 			},
-			RestartPolicy: corev1.RestartPolicyNever,
+			RestartPolicy:      corev1.RestartPolicyNever,
+			ServiceAccountName: "filos-service",
 		},
 	}
 
 	// Create filos pod instance
-	podsClient := clientset.CoreV1().Pods(c.namespace)
+	podsClient := clientset.CoreV1().Pods("daas")
 	podInstance, err := podsClient.Create(context.TODO(), pod, metav1.CreateOptions{})
 	if err != nil {
-		log.Error("Failed to create pod: %v", err)
+		log.Error("Failed to create Filos pod", err)
 		return
 	}
 
@@ -109,14 +121,14 @@ func runFilosInstance(c Context) {
 		FieldSelector: fmt.Sprintf("metadata.name=%s", podInstance.Name),
 	})
 	if err != nil {
-		log.Error("Failed to watch pod: %v", err)
+		log.Error("Failed to create watch Filos pod", err)
 		return
 	}
 
 	for event := range watch.ResultChan() {
 		p, ok := event.Object.(*corev1.Pod)
 		if !ok {
-			log.Error("Failed to get pod: %v", err)
+			log.Error("Failed to watch Filos pod", err)
 			return
 		}
 		switch event.Type {
