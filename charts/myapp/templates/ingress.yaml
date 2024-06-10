@@ -5,7 +5,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: myapp.dagobah.system
+  - host: myapp.{{ .Values.fqdn }}
     http:
       paths:
       - backend:
