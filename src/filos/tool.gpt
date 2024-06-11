@@ -1,4 +1,4 @@
-tools: sys.getenv, describe_resource, get_resource
+tools: sys.getenv, sys.write, describe_resource, get_resource
 You have just recieved an alarm related to a Kubernetes resource. The information about the alarm is contained in the following environment variables:
 ALERT_ISSUE_ID
 ALERT_NAMESPACE
@@ -8,10 +8,12 @@ ALERT_URL
 ALERT_SUMMARY
 
 1. Evaluate the cause of the alert using the information provided in the ALERT_SUMMARY environment variable.
-2. Reference the information made available at the website URL provided by the ALERT_URL environment variable.
+2. Visit the website URL provided by the ALERT_URL environment variable.
 3. Use the information provided by environment variables ALERT_NAMESPACE, ALERT_RESOURCE_TYPE, and ALERT_APP_NAME to describe the kubernetes resource using the describe_resource tool.
 4. Use the information provided by environment variables ALERT_NAMESPACE, ALERT_RESOURCE_TYPE, and ALERT_APP_NAME to retrieve the kubernetes resource configuration using the get_resource tool.
-5. Use the information provided by environment variable ALERT_ISSUE_ID name an output of a suggestion to resolve the issue based on what has been discovered.
+5. Create a summary which includes what has been discovered and suggestions to resolve the issue.
+5. Use the information provided by environment variable ALERT_ISSUE_ID to title an output of the summary and write it to a file named issue.txt.
+6. Concatenate the issue.txt file as final output.
 
 ---
 name: describe_resource

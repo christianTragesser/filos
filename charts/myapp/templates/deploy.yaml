@@ -2,21 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: myapp
-  name: myapp
+    app: {{ .Release.Name }}
+  name: {{ .Release.Name }}
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: myapp
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: myapp
+        app: {{ .Release.Name }}
     spec:
       containers:
       - image: docker.io/christiantragesser/myapp
-        name: myapp
+        name: {{ .Release.Name }}
+        command: [{{ .Values.deploy.command | quote }}]
         ports:
           - containerPort: 5000
         livenessProbe:
@@ -32,9 +33,9 @@ spec:
           initialDelaySeconds: 2
           periodSeconds: 5
         resources:
-          limits:
-            cpu: 500m
-            memory: 4M
           requests:
-            cpu: 200m
-            memory: 2M
+            cpu: {{ .Values.deploy.resources.requests.cpu }}
+            memory: {{ .Values.deploy.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.deploy.resources.limits.cpu }}
+            memory: {{ .Values.deploy.resources.limits.memory }}

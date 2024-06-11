@@ -1,0 +1,10 @@
+fqdn: my.poc
+deploy:
+  command: myapp-cpu
+  resources:
+    requests:
+      cpu: 500m
+      memory: 10M
+    limits:
+      cpu: 900m
+      memory: 50M
