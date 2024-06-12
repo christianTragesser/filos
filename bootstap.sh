@@ -6,6 +6,7 @@ read FQDN
 printf "\nEnter your OpenAI API key: "
 read -s OPENAI_API_KEY
 
+printf "\n"
 helm repo add coroot https://coroot.github.io/helm-charts
 helm repo update coroot
 
@@ -14,6 +15,7 @@ printf "\nChecking for Nginx ingress controller:\n"
 helm ls -n ingress-nginx | grep ingress-nginx > /dev/null || \
 helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx \
   --namespace ingress-nginx --create-namespace
+kubectl wait --timeout=120s --for=condition=Available deploy/ingress-nginx-controller > /dev/null
 
 # coroot
 printf "\nChecking for coroot services:\n"
@@ -40,4 +42,4 @@ printf "\nChecking for myapp-cpu:\n"
 helm ls | grep myapp-cpu > /dev/null || \
 helm install myapp-cpu ./charts/myapp -f ./charts/myapp/cpu-values.yaml --set fqdn=${FQDN}
 
-# for i in $(seq 1 200); do curl -I http://myapp-mem.${FQDN}; curl -I http://myapp-cpu.${FQDN}; sleep 2; done
+printf "\nYou can now run the following command to initiate service requests:\n'for i in $(seq 1 200); do curl -I http://myapp-mem.${FQDN}; curl -I http://myapp-cpu.${FQDN}; sleep 1; done'\n"
