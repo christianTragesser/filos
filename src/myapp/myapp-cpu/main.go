@@ -15,7 +15,7 @@ var log = slog.New(slog.NewJSONHandler(os.Stdout, nil))
 func cpuSpike() {
 	cmd := exec.Command(
 		"stress-ng", "--cpu", "1",
-		"--timeout", "120",
+		"--timeout", "30",
 	)
 
 	for {
