@@ -1,4 +1,4 @@
-tools: sys.getenv, sys.write, describe_resource, get_resource
+tools: sys.getenv, sys.write, describe_resource, get_resource, save_issue_info
 You have just recieved an alarm related to a Kubernetes resource. The information about the alarm is contained in the following environment variables:
 ALERT_ISSUE_ID
 ALERT_NAMESPACE
@@ -13,7 +13,7 @@ ALERT_SUMMARY
 4. Use the information provided by environment variables ALERT_NAMESPACE, ALERT_RESOURCE_TYPE, and ALERT_APP_NAME to retrieve the kubernetes resource configuration using the get_resource tool.
 5. Create a summary which includes what has been discovered and suggestions to resolve the issue described in the environment variable ALERT_SUMMARY.
 5. Use the information provided by environment variable ALERT_ISSUE_ID to title an output of the summary and write it to a file named issue.txt.
-6. Concatenate the issue.txt file as final output.
+6. Using the save_issue_info tool, write the contents of issue.txt file to redis with the environment variable ALERT_ISSUE_ID as a key.
 
 ---
 name: describe_resource
@@ -38,3 +38,15 @@ args: name: the name of the kubernetes resource
 #!/bin/sh
 
 kubectl get -n ${ns} ${type}/${name} -o yaml
+
+---
+name: save_issue_info
+tools: sys.exec
+description: save issue information to redis
+args: i: the issue ID used as the redis record key
+
+#!/bin/sh
+
+CONTENT=$(cat issue.txt)
+
+redis-cli -h $REDIS_HOST MSET ${i} "$CONTENT"

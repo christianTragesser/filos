@@ -29,6 +29,7 @@ func getKubeClient() (*kubernetes.Clientset, error) {
 
 func runFilosInstance(c Context) {
 	var clientset *kubernetes.Clientset
+	redisHost := os.Getenv("REDIS_HOST")
 
 	clientset, err := getKubeClient()
 	if err != nil {
@@ -62,8 +63,9 @@ func runFilosInstance(c Context) {
 		Spec: corev1.PodSpec{
 			Containers: []corev1.Container{
 				{
-					Name:  "filos-" + c.issueID,
-					Image: "docker.io/christiantragesser/filos",
+					Name:            "filos-" + c.issueID,
+					ImagePullPolicy: "Always",
+					Image:           "docker.io/christiantragesser/filos",
 					Env: []corev1.EnvVar{
 						{
 							Name: "OPENAI_API_KEY",
@@ -75,6 +77,10 @@ func runFilosInstance(c Context) {
 									Key: "key",
 								},
 							},
+						},
+						{
+							Name:  "REDIS_HOST",
+							Value: redisHost,
 						},
 						{
 							Name:  "ALERT_ISSUE_ID",

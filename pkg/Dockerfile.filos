@@ -1,5 +1,5 @@
 FROM alpine
-RUN apk add --no-cache curl kubectl && \
+RUN apk add --no-cache curl kubectl redis jq && \
     curl https://get.gptscript.ai/install.sh | sh
 
 ADD tool.gpt /tool.gpt

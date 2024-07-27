@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Platform SLO Events</title>
+    <script src="https://unpkg.com/htmx.org/dist/htmx.js"></script>
+</head>
+<body>
+    <H1>SLO Events</H1>
+    <div id="keys-container" hx-get="/events" hx-trigger="load,every 3s">
+        <ul>
+            {{ range . }}
+            <li>{{ . }}</li>
+            {{ end }}
+        </ul>
+    </div>
+</body>
+</html>

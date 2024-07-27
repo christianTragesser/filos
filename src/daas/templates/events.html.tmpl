@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+   {{ if . }}
+    <ul>
+        {{ range . }}
+        <li><a href="/issue/{{ . }}" target="_blank">{{ . }}</a></li>
+        {{ end }}
+    </ul>
+    {{ else }}
+      <p> There are currently no SLO related issues. </p>
+    {{ end }}
+</body>
+</html>
