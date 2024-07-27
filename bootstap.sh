@@ -46,4 +46,4 @@ printf "\nChecking for myapp-cpu:\n"
 helm ls | grep myapp-cpu > /dev/null || \
 helm install myapp-cpu ./charts/myapp -f ./charts/myapp/cpu-values.yaml --set fqdn=${FQDN}
 
-printf "\nYou can now run the following command to initiate service requests:\n'for i in \$(seq 1 200); do curl -I http://myapp-mem.${FQDN}; curl -I http://myapp-cpu.${FQDN}; sleep 1; done'\n"
+printf "\nWhen ready, use the following bash command to simulate application request traffic:\n\n'for i in \$(seq 1 200); do curl -I http://myapp-mem.${FQDN}; curl -I http://myapp-cpu.${FQDN}; sleep 1; done'\n"
