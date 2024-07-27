@@ -19,6 +19,10 @@ spec:
       containers:
       - image: docker.io/christiantragesser/daas
         name: daas-service
+        imagePullPolicy: Always
+        env:
+        - name: REDIS_HOST
+          value: "daas-redis.daas.svc.cluster.local"
         ports:
           - containerPort: 5000
         livenessProbe:
