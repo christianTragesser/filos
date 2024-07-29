@@ -1,0 +1,4 @@
+apiVersion: v1
+description: DevOps as a Service (DaaS)
+name: daas
+version: 0.1.0

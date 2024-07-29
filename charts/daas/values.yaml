@@ -1,0 +1,2 @@
+fqdn: my.poc
+redis_host: "daas-redis.daas.svc.cluster.local"

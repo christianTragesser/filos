@@ -6,7 +6,7 @@ metadata:
   name: daas-service
   namespace: daas
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: daas-service
@@ -22,7 +22,7 @@ spec:
         imagePullPolicy: Always
         env:
         - name: REDIS_HOST
-          value: "daas-redis.daas.svc.cluster.local"
+          value: {{ .Values.redis_host }}
         ports:
           - containerPort: 5000
         livenessProbe:
