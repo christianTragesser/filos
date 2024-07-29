@@ -5,7 +5,7 @@ ADD main.go .
 ADD alert.go .
 ADD pod.go .
 ADD handlers.go .
-ADD events.go .
+ADD db.go .
 COPY templates ./templates
 RUN go mod tidy
 

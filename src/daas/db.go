@@ -6,13 +6,17 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-func getEventKeys() ([]string, error) {
+func getRedisClient() *redis.Client {
 	redisHost := os.Getenv("REDIS_HOST")
-	rdb := redis.NewClient(&redis.Options{
+	return redis.NewClient(&redis.Options{
 		Addr:     redisHost + ":6379",
 		Password: "",
 		DB:       0,
 	})
+}
+
+func getEventKeys() ([]string, error) {
+	rdb := getRedisClient()
 
 	keys, err := rdb.Keys(rdb.Context(), "*").Result()
 	if err != nil {
@@ -24,12 +28,7 @@ func getEventKeys() ([]string, error) {
 }
 
 func getIssueReport(key string) (string, error) {
-	redisHost := os.Getenv("REDIS_HOST")
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     redisHost + ":6379",
-		Password: "",
-		DB:       0,
-	})
+	rdb := getRedisClient()
 
 	report, err := rdb.Get(rdb.Context(), key).Result()
 	if err != nil {
