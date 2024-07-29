@@ -11,11 +11,9 @@ import (
 //go:embed templates/dashboard.html.tmpl
 var dashboardTemplate []byte
 
-//go:embed templates/events.html.tmpl
-var eventTemplate []byte
-
-//go:embed templates/issue.html.tmpl
-var issueTemplate []byte
+func handleDashboard(w http.ResponseWriter, r *http.Request) {
+	renderDashboardTemplate(w, dashboardTemplate)
+}
 
 func renderDashboardTemplate(w http.ResponseWriter, tmpl []byte) {
 	t, _ := template.New("dashboard").Parse(string(tmpl))
@@ -23,6 +21,13 @@ func renderDashboardTemplate(w http.ResponseWriter, tmpl []byte) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+//go:embed templates/events.html.tmpl
+var eventTemplate []byte
+
+func handleEvents(w http.ResponseWriter, r *http.Request) {
+	renderEventTemplate(w, eventTemplate)
 }
 
 func renderEventTemplate(w http.ResponseWriter, tmpl []byte) {
@@ -37,6 +42,15 @@ func renderEventTemplate(w http.ResponseWriter, tmpl []byte) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+//go:embed templates/issue.html.tmpl
+var issueTemplate []byte
+
+func handleIssue(w http.ResponseWriter, r *http.Request) {
+	issueID := r.PathValue("id")
+
+	renderIssueTemplate(w, issueTemplate, issueID)
 }
 
 func renderIssueTemplate(w http.ResponseWriter, tmpl []byte, issueID string) {
@@ -58,22 +72,6 @@ func renderIssueTemplate(w http.ResponseWriter, tmpl []byte, issueID string) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-}
-
-func handleDashboard(w http.ResponseWriter, r *http.Request) {
-	renderDashboardTemplate(w, dashboardTemplate)
-}
-
-func handleEvents(w http.ResponseWriter, r *http.Request) {
-	renderEventTemplate(w, eventTemplate)
-}
-
-func handleIssue(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
-	split := strings.Split(path, "/")
-	issueID := split[len(split)-1]
-
-	renderIssueTemplate(w, issueTemplate, issueID)
 }
 
 func handleWebhook(w http.ResponseWriter, r *http.Request) {

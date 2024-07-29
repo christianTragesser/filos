@@ -9,7 +9,7 @@ import (
 var log = slog.New(slog.NewTextHandler(os.Stdout, nil))
 
 func main() {
-	log.Info("Starting DaaS service...")
+	mux := &http.ServeMux{}
 
 	_, envVarSet := os.LookupEnv("REDIS_HOST")
 	if !envVarSet {
@@ -17,12 +17,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	http.HandleFunc("/", handleDashboard)
-	http.HandleFunc("/alerts", handleWebhook)
-	http.HandleFunc("/events", handleEvents)
-	http.HandleFunc("/health", handleHealth)
-	http.HandleFunc("/issue/", handleIssue)
-	if err := http.ListenAndServe(":5000", nil); err != nil {
+	log.Info("Starting DaaS service...")
+
+	mux.HandleFunc("/", handleDashboard)
+	mux.HandleFunc("/alerts", handleWebhook)
+	mux.HandleFunc("/events", handleEvents)
+	mux.HandleFunc("/health", handleHealth)
+	mux.HandleFunc("/issue/{id}", handleIssue)
+	if err := http.ListenAndServe(":5000", mux); err != nil {
 		log.Error(err.Error())
 	}
 }
